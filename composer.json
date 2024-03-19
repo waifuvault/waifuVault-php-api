@@ -1,0 +1,9 @@
+{
+  "type": "library",
+  "private": true,
+  "autoload": {
+	"psr-4": {
+	  "ErnestMarcinko\\WaifuVault\\": "src/"
+	}
+  }
+}
