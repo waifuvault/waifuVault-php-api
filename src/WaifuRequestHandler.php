@@ -4,16 +4,14 @@
 
 namespace ErnestMarcinko\WaifuVault;
 
-use AllowDynamicProperties;
 use ErnestMarcinko\WaifuVault\Exceptions\WaifuException;
-use Error;
 use ErrorException;
 use Exception;
 
 /**
  * Handles requests for WaifuAPI via CURL
  */
-#[AllowDynamicProperties] class WaifuRequestHandler implements RequestHandler {
+class WaifuRequestHandler implements RequestHandler {
 	private string $result;
 
 	private int $response_code;
@@ -52,6 +50,8 @@ use Exception;
 				break;
 			case RequestMethods::DELETE:
 				$curl_options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+				break;
+			case RequestMethods::GET:
 				break;
 		}
 		if (!is_null($header)) {

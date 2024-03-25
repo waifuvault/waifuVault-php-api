@@ -137,9 +137,9 @@ The `WaifuApi::deleteEntry` function is used to get the file information.
 
 #### Parameters
 
-| Param  | Type     | Description                              | Required | Extra info |
-|---------|----------|------------------------------------------|----------|------------|
-| `token` | `string` | The token of the file you wish to delete | true     |            |
+| Param    | Type     | Description                                | Required | Extra info |
+|----------|----------|--------------------------------------------|----------|------------|
+| `token`  | `string` | The token of the file you wish to delete   | true     |            |
 
 #### Return values
 
@@ -185,6 +185,7 @@ Obtain an encrypted file
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $response = $waifu->uploadFile(array(
 	'url' => 'https://waifuvault.moe/assets/custom/images/08.png',
 	'password' => 'epic'
@@ -201,6 +202,7 @@ Obtain a file from Unique identifier
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $contents = $waifu->getFile(array(
 	'filename' => '/1710111505084/08.png'
 ));
@@ -234,6 +236,7 @@ Set a password on a non-encrypted file:
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $response = $waifu->modifyEntry(array(
 	'token' => 'token',
 	'password' => 'apple'
@@ -245,6 +248,7 @@ Change a password:
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $response = $waifu->modifyEntry(array(
 	'token' => 'token',
 	'password' => 'newPass'
@@ -258,6 +262,7 @@ change expire:
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $response = $waifu->modifyEntry(array(
 	'token' => 'token',
 	'customExpiry' => "1d"
@@ -270,12 +275,73 @@ decrypt a file and remove the password:
 ```php
 use ErnestMarcinko\WaifuVault\WaifuApi;
 
+$waifu = new WaifuApi();
 $response = $waifu->modifyEntry(array(
 	'token' => 'token',
 	'password' => ''
 	'previousPassword' => 'apple'
 ));
 var_dump($response->protected);
+```
+
+## Custom Request Handler
+
+The WaifuApi object can be instantiated with a custom RequestHandler (implementing RequestHandler interface). The built in request handler uses CURL.
+
+### Default Request Handler
+
+When isntantiating the class without any parameters the default request handler is used.
+
+```php
+use ErnestMarcinko\WaifuVault\WaifuApi;
+
+$waifu = new WaifuApi();
+
+// which is equivalent to:
+
+$waifu = new WaifuApi( new WaifuRequestHandler() );
+```
+
+### Making your custom request handler
+
+If you prefer your own methods to handle requests, you can create your own class and pass it on to the `WaifuApi` constructor.
+The class must implement the `ErnestMarcinko\WaifuVault\RequestHandler` interface.
+
+```php
+use ErnestMarcinko\WaifuVault\RequestMethods;
+use ErnestMarcinko\WaifuVault\RequestHandler;
+
+class MyCustomWaifuRequestHandler implements RequestHandler {
+	public function make(
+		RequestMethods $method,
+		string $endpoint,
+		array|null $header = null,
+		array|string|bool|null $post_fields = null
+	): static {
+		// do your thing here
+		return $this;
+	}
+
+	public function getWaifu(): WaifuResponse {
+		return new WaifuResponse();
+	}
+	
+	public function getTrue(): true {
+		return true;
+	}
+
+	public function getRaw(): string {
+		return 'raw file content';
+	}
+}
+```
+
+Then use it via DI:
+
+```php
+use ErnestMarcinko\WaifuVault\WaifuApi;
+
+$waifu = new WaifuApi( new MyCustomWaifuRequestHandler() );
 ```
 
 ## WaifuVault SDKs for other languages
