@@ -19,10 +19,17 @@ try {
 	));
 	$waifu->deleteEntry($response->token);
 
+//	$response = $waifu->uploadFile(array(
+//		'file' =>   __DIR__ . '/WaifuTests/image.jpg',
+//		'filename' => 'mypenisisveryshort.jpg',
+//		'password' => 'penis1'
+//	));
+//	var_dump($response);
+
 	$response = $waifu->uploadFile(array(
-		'file' =>   __DIR__ . '/WaifuTests/image.jpg',
-		'filename' => 'mypenisisveryshort.jpg',
-		'password' => 'penis1'
+		'file_contents' =>   file_get_contents(__DIR__ . '/WaifuTests/image.jpg'),
+		'filename' => 'mypenisisverylongits1inchesgirl.jpg',
+		'password' => 'penis2'
 	));
 	var_dump($response);
 

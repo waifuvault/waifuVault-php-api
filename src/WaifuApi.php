@@ -17,11 +17,15 @@ use CURLStringFile;
  *     file: string,
  *     filename?: string
  * }
+ * @phpstan-type FileContentUpload array{
+ *     file_contents: string,
+ *     filename: string
+ * }
  * @phpstan-type UrlUpload array{
  *     url: string
  * }
  *
- * @phpstan-type uploadFileArg FileUpload|UrlUpload
+ * @phpstan-type uploadFileArg FileUpload|FileContentUpload|UrlUpload
  * @phpstan-type modifyFileArg array{
  *     token: string,
  *     password?: string,
@@ -30,7 +34,11 @@ use CURLStringFile;
  *     hideFilename?: bool
  * }
  *
- * @phpstan-type getFileArg array{password?:string, token:string}|array{password?:string, filename:string}
+ * @phpstan-type getFileArg array{
+ *     password?:string, token:string
+ * }|array{
+ *     password?:string, filename:string
+ * }
  */
 class WaifuApi {
 	private const string BASE_URL = 'https://waifuvault.moe';
@@ -74,8 +82,13 @@ class WaifuApi {
 				throw new Exception('File does is not readable.');
 			}
 			$post_fields['file'] = new CURLStringFile($data, $file_name);
+		} elseif (isset($args['file_contents'])) {
+			if (!isset($args['filename']) || $args['filename'] === '') { // @phpstan-ignore-line
+				throw new Exception('File name is missing.');
+			}
+			$post_fields['file'] = new CURLStringFile($args['file_contents'], $args['filename']);
 		} else {
-			throw new Exception('Please provide a url or file.');
+			throw new Exception('Please provide a url, file or file_contents.');
 		}
 		return $this->requestHandler->make(
 			RequestMethods::PUT,
@@ -93,7 +106,7 @@ class WaifuApi {
 	 * @return WaifuResponse
 	 * @throws Exception|WaifuException
 	 */
-	public function getFileInfo(string $token, bool $formatted = true): WaifuResponse {
+	public function getFileInfo(string $token, bool $formatted = false): WaifuResponse {
 		if ($token === '') {
 			throw new Exception('Token is empty.');
 		}

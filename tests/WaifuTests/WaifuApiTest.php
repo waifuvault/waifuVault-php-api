@@ -24,13 +24,14 @@ class WaifuApiTest extends TestCase {
 	 */
 	public function testUploadFileValid(): void {
 		$this->setUpMockWaifuRequestHandler([
-			'make' => [null, 3],
-			'getWaifu' => [$this->waifuResponse, 3],
+			'make' => [null, 4],
+			'getWaifu' => [$this->waifuResponse, 4],
 		]);
 		$test_args = [
 			['url' => 'https://domain.com/image.png'],
 			['file' =>  __DIR__ . '/image.jpg'],
 			['file' =>  __DIR__ . '/image.jpg', 'filename' => 'customfilename.jpg'],
+			['file_contents' =>  "file contents", 'filename' => 'customfilename.jpg'],
 		];
 		try {
 			foreach ($test_args as $args) {
@@ -48,6 +49,8 @@ class WaifuApiTest extends TestCase {
 			['file' =>  __DIR__ . '/nonexistent2.jpg'],
 			['file' =>  __DIR__ . '/nonexistent2.jpg', 'filename' => 'random'],
 			['file' =>  __DIR__ . '/nonexistent2.jpg', 'filename' => ''],
+			['file_contents' =>  __DIR__ . '/nonexistent2.jpg'],
+			['file_contents' =>  __DIR__ . '/nonexistent2.jpg', 'filename' => ''],
 			['_file' =>  __DIR__ . '/nonexistent2.jpg', '_filename' => ''],
 			[]
 		];
