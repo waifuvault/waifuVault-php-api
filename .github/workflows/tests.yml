@@ -1,0 +1,68 @@
+# Run the github Continuous Integration
+name: CI
+
+# Run this action on:
+on:
+
+  # When the repo is PUSHed to [main] branch
+  pull_request:
+    branches: [ main ]
+
+  # And allow a manual 'run' button in the github action tab
+  workflow_dispatch:
+
+# When run do this job:
+jobs:
+  run:
+
+    # Use the operating system specified in the strategy 'matrix' below.
+    runs-on: ${{ matrix.operating-system }}
+
+    # Matrix of variables
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.3']
+
+    # Give the runner a title (using the matrix variables)
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+
+    # Now do these steps.
+    steps:
+
+      # Use the 'checkout' action (https://github.com/actions/checkout)
+      # To pull this repo into the root of your container.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+        # Install PHP
+      - name: Setup PHP
+        # Using this repo
+        uses: shivammathur/setup-php@v2
+        # And these settings
+        with:
+          php-version: ${{ matrix.php-versions }} # Change the version to install with the matrix variables above.
+          extensions: mbstring, intl #optional, setup extensions
+          ini-values: post_max_size=256M, short_open_tag=On #optional, setup php.ini configuration
+          coverage: xdebug #optional, setup coverage driver
+
+        # Check PHP is installed.
+        # Weird Note - the next step 'composer install' fails if this PHP Check is not run.
+      - name: Check PHP Version
+        run: php -v
+
+        # Install composer to use your autoloader
+      - name: Composer install
+        run: composer install --optimize-autoloader --prefer-dist
+
+        # Check listing of directory
+        # Also a quick example of multi-commands and the $GITHUB_WORKSPACE variable.
+      - name: list dir
+        run: |
+          ls -la
+          ls $GITHUB_WORKSPACE
+
+        # RUN, You fools.
+        # Kick of the phpunit testsuite.
+      - name: PHPUnit tests
+        run: ./vendor/bin/phpunit

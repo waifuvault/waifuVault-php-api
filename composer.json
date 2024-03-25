@@ -1,9 +1,31 @@
 {
-  "type": "library",
-  "private": true,
-  "autoload": {
-	"psr-4": {
-	  "ErnestMarcinko\\WaifuVault\\": "src/"
+	"name": "ernestmarcinko/waifuvault-php-api",
+	"description": "SDK to interact with WaifuVault, a temporary file hosting service",
+	"type": "library",
+	"keywords": [
+		"waifu",
+		"file hosting",
+		"temp file host",
+		"temporary files",
+		"file storage"
+	],
+	"autoload": {
+		"psr-4": {
+			"ErnestMarcinko\\WaifuVault\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"ErnestMarcinko\\WaifuTests\\": "tests/WaifuTests/"
+		}
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^1.10",
+		"phpunit/phpunit": "11.*",
+		"php-mock/php-mock": "^2.5",
+		"squizlabs/php_codesniffer": "^3.8"
+	},
+	"require": {
+		"php": "^8.3"
 	}
-  }
 }
