@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ruleset name="Custom">
+    <description>Custom Ruleset</description>
+    <rule ref="PSR12">
+        <arg name="tab-width" value="4"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed"/>
+        <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterHint"/>
+        <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+        <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
+        <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+        <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+        <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+        <rule ref="Generic.WhiteSpace.ScopeIndent">
+            <properties>
+                <property name="indent" value="4"/>
+                <property name="tabIndent" value="true"/>
+            </properties>
+        </rule>
+    </rule>
+</ruleset>
