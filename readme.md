@@ -47,9 +47,9 @@ The function accepts an **associative array** of arguments.
 
 #### WaifuResponse Return value<a id="waifuresponse-object"></a>
 
-The function returns a `WaifuResponse` object, throws and `Exception` or `WaifuException`.
+The function returns a `WaifuResponse` object, throws and `Exception` or `WaifuException`. Almost all SDK functions will use this object as their return values.
 ```php
-Example response object:
+// WaifuResponse object:
 
 ErnestMarcinko\WaifuVault\WaifuResponse (4) {
   ["token"]=> string(36) "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
