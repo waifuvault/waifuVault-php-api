@@ -6,7 +6,6 @@ files
 vendor
 *.log
 composer.lock
-image.jpg
 package-lock.json
 test.msi
 waifuvaultphp.iml
