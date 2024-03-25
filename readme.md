@@ -1,4 +1,4 @@
-# waifuvault-node-api
+# waifuvault-php-api
 
 ![tests](https://github.com/waifuvault/waifuVault-php-api/actions/workflows/tests.yml/badge.svg)
 
@@ -277,3 +277,9 @@ $response = $waifu->modifyEntry(array(
 ));
 var_dump($response->protected);
 ```
+
+## WaifuVault SDKs for other languages
+- [Node.js SDK](https://www.npmjs.com/package/waifuvault-node-api)
+- [Python SDK](https://pypi.org/project/waifuvault/)
+- [Go SDK](https://pkg.go.dev/github.com/waifuvault/waifuVault-go-api)
+- [C# SDK](https://www.nuget.org/packages/Waifuvault)
