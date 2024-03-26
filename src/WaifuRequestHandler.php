@@ -127,6 +127,9 @@ class WaifuRequestHandler implements RequestHandler {
 	 * @throws Exception
 	 */
 	private function responseErrorCheck(): void {
+		if (!isset($this->result, $this->response_code)) {
+			throw new ErrorException('Please call ' . self::class . ':make() first.');
+		}
 		if ($this->response_code < 300) {
 			return;
 		}
