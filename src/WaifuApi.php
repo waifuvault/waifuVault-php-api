@@ -68,7 +68,7 @@ class WaifuApi {
 			ARRAY_FILTER_USE_BOTH
 		));
 		if ($params !== '') {
-			$url .= '?' . $params;
+			$url .=  '?' . $params;
 		}
 		if (isset($args['url'])) {
 			$post_fields['url'] = $args['url'];
