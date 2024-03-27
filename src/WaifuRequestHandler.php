@@ -27,9 +27,9 @@ class WaifuRequestHandler implements RequestHandler {
 	 * @throws Exception
 	 */
 	public function make(
-		RequestMethods $method,
-		string $endpoint,
-		array|null $header = null,
+		RequestMethods         $method,
+		string                 $endpoint,
+		array|null             $header = null,
 		array|string|bool|null $post_fields = null
 	): static {
 		$curl = curl_init();
