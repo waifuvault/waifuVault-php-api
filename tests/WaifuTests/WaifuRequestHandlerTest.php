@@ -141,7 +141,16 @@ class WaifuRequestHandlerTest extends TestCase {
 			$this->addToAssertionCount(1);
 		}
 
-		$this->assertSame(4, $this->numberOfAssertionsPerformed());
+		// trigger responseErrorCheck #3 - call without ->make()
+		try {
+			$handler = new WaifuRequestHandler();
+			$handler->getWaifu();
+		} catch (Exception $e) {
+			$this->assertSame(ErrorException::class, get_class($e));
+			$this->addToAssertionCount(1);
+		}
+
+		$this->assertSame(5, $this->numberOfAssertionsPerformed());
 	}
 
 	public function testGetTrue(): void {
@@ -154,6 +163,16 @@ class WaifuRequestHandlerTest extends TestCase {
 		$response = $handler->make(RequestMethods::GET, 'fake')
 			->getTrue();
 		$this->assertSame(true, $response);
+
+		// trigger responseErrorCheck call without ->make()
+		try {
+			$handler = new WaifuRequestHandler();
+			$handler->getTrue();
+		} catch (Exception $e) {
+			$this->assertSame(ErrorException::class, get_class($e));
+			$this->addToAssertionCount(1);
+		}
+		$this->assertSame(1, $this->numberOfAssertionsPerformed());
 	}
 
 	public function testGetRaw(): void {
@@ -166,6 +185,16 @@ class WaifuRequestHandlerTest extends TestCase {
 		$response = $handler->make(RequestMethods::GET, 'fake')
 			->getRaw();
 		$this->assertSame('content', $response);
+
+		// trigger responseErrorCheck call without ->make()
+		try {
+			$handler = new WaifuRequestHandler();
+			$handler->getRaw();
+		} catch (Exception $e) {
+			$this->assertSame(ErrorException::class, get_class($e));
+			$this->addToAssertionCount(1);
+		}
+		$this->assertSame(1, $this->numberOfAssertionsPerformed());
 
 		$this->setGlobalMocks([
 			'curl_exec' => 'content',

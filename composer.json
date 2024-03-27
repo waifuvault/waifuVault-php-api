@@ -1,6 +1,7 @@
 {
 	"name": "ernestmarcinko/waifuvault-php-api",
 	"description": "SDK to interact with WaifuVault, a temporary file hosting service",
+	"license": "MIT",
 	"type": "library",
 	"keywords": [
 		"waifu",

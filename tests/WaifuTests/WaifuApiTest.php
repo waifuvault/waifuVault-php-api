@@ -19,9 +19,6 @@ class WaifuApiTest extends TestCase {
 	private WaifuApi $waifu;
 	private WaifuResponse $waifuResponse;
 
-	/**
-	 * @return void
-	 */
 	public function testUploadFileValid(): void {
 		$this->setUpMockWaifuRequestHandler([
 			'make' => [null, 4],
