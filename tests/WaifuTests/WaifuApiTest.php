@@ -125,7 +125,6 @@ class WaifuApiTest extends TestCase {
 	}
 
 	public function setUp(): void {
-		GlobalMock::disable();
 		$args = [
 			"token" => "13b2485a-1010-4e3e-8f75-20f2a0c50b56",
 			"url" => "https://waifuvault.moe/f/1711098733870/image.jpg",

@@ -15,9 +15,9 @@ interface RequestHandler {
 	 * @param string|array<string, mixed>|false|null $post_fields
 	 */
 	public function make(
-		RequestMethods         $method,
-		string                 $endpoint,
-		array|null             $header = null,
+		RequestMethods $method,
+		string $endpoint,
+		array|null $header = null,
 		array|string|bool|null $post_fields = null
 	): static;
 

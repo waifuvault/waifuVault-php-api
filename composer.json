@@ -23,8 +23,8 @@
 	"require-dev": {
 		"phpstan/phpstan": "^1.10",
 		"phpunit/phpunit": "11.*",
-		"php-mock/php-mock": "^2.5",
-		"squizlabs/php_codesniffer": "^3.8"
+		"squizlabs/php_codesniffer": "^3.8",
+		"ernestmarcinko/mockutils": "^1.0"
 	},
 	"require": {
 		"php": "^8.3"

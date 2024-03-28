@@ -7,6 +7,7 @@
 
 namespace ErnestMarcinko\WaifuTests;
 
+use ErnestMarcinko\MockUtils\MockUtils;
 use ErnestMarcinko\WaifuVault\Exceptions\WaifuException;
 use ErnestMarcinko\WaifuVault\RequestMethods;
 use ErnestMarcinko\WaifuVault\WaifuRequestHandler;
@@ -16,6 +17,8 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 
 class WaifuRequestHandlerTest extends TestCase {
+	use MockUtils;
+
 	private WaifuResponse $waifuResponse;
 	public function testMake(): void {
 		$handler = new WaifuRequestHandler();
@@ -29,7 +32,7 @@ class WaifuRequestHandlerTest extends TestCase {
 			},
 			'curl_exec' => 'result',
 			'curl_getinfo' => 200,
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler->make(RequestMethods::GET, 'fake1');
 
 		$this->setGlobalMocks([
@@ -41,7 +44,7 @@ class WaifuRequestHandlerTest extends TestCase {
 				$this->assertEquals([1, '1', 'hey'], $curl_options[CURLOPT_HTTPHEADER]);
 				$this->addToAssertionCount(5);
 			}
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler->make(RequestMethods::POST, 'fake2', [1, '1', 'hey']); // @phpstan-ignore-line
 
 		$this->setGlobalMocks([
@@ -53,7 +56,7 @@ class WaifuRequestHandlerTest extends TestCase {
 				$this->assertEquals([1, '1', 'hey'], $curl_options[CURLOPT_POSTFIELDS]);
 				$this->addToAssertionCount(5);
 			}
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler->make(RequestMethods::PUT, 'fake3', null, [1, '1', 'hey']); // @phpstan-ignore-line
 
 		$this->setGlobalMocks([
@@ -66,11 +69,11 @@ class WaifuRequestHandlerTest extends TestCase {
 				$this->addToAssertionCount(6);
 			},
 			'curl_exec' => null
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$this->expectException(Exception::class);
 		$handler->make(RequestMethods::PATCH, 'fake4', null, [1, '1', 'hey']); // @phpstan-ignore-line
 
-		$this->assertSame(16, $this->numberOfAssertionsPerformed());
+		$this->assertSame(19, $this->numberOfAssertionsPerformed());
 	}
 
 	public function testGetWaifu(): void {
@@ -78,79 +81,65 @@ class WaifuRequestHandlerTest extends TestCase {
 			'curl_exec' => json_encode((array)$this->waifuResponse),
 			'curl_getinfo' => 200,
 			'json_validate' => true,
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$response = $handler->make(RequestMethods::GET, 'fake')
 			->getWaifu();
 		$this->assertEqualsCanonicalizing($this->waifuResponse, $response);
 
-		try {
-			$this->setGlobalMocks([
-				'curl_exec' => 'result',
-				'curl_getinfo' => 200,
-				'json_validate' => false,
-			]);
-			$handler = new WaifuRequestHandler();
-			$handler->make(RequestMethods::GET, 'fake')
-				->getWaifu();
-		} catch (Exception) {
-			$this->addToAssertionCount(1);
-		}
+		$this->setGlobalMocks([
+			'curl_exec' => 'result',
+			'curl_getinfo' => 200,
+			'json_validate' => false,
+		], "ErnestMarcinko\\WaifuVault");
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			Exception::class
+		);
 
-		try {
-			$this->setGlobalMocks([
-				'curl_exec' => 'result',
-				'curl_getinfo' => 200,
-				'json_validate' => true,
-				'json_decode' => null,
-			]);
-			$handler = new WaifuRequestHandler();
-			$handler->make(RequestMethods::GET, 'fake')
-				->getWaifu();
-		} catch (Exception) {
-			$this->addToAssertionCount(1);
-		}
+		$this->setGlobalMocks([
+			'curl_exec' => 'result',
+			'curl_getinfo' => 200,
+			'json_validate' => true,
+			'json_decode' => null,
+		], "ErnestMarcinko\\WaifuVault");
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			Exception::class
+		);
 
 		// trigger responseErrorCheck #1
-		try {
-			$this->setGlobalMocks([
-				'curl_exec' => 'result',
-				'curl_getinfo' => 300,
-			]);
-			$handler = new WaifuRequestHandler();
-			$handler->make(RequestMethods::GET, 'fake')
-				->getWaifu();
-		} catch (Exception $e) {
-			$this->assertSame(ErrorException::class, get_class($e));
-			$this->addToAssertionCount(1);
-		}
+		$this->setGlobalMocks([
+			'curl_exec' => 'result',
+			'curl_getinfo' => 300,
+		], "ErnestMarcinko\\WaifuVault");
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			ErrorException::class
+		);
 
 		// trigger responseErrorCheck #1
-		try {
-			$this->setGlobalMocks([
-				'curl_exec' => 'result',
-				'curl_getinfo' => 300,
-				'json_validate' => true,
-				'json_decode' => array()
-			]);
-			$handler = new WaifuRequestHandler();
-			$handler->make(RequestMethods::GET, 'fake')
-				->getWaifu();
-		} catch (Exception $e) {
-			$this->assertSame(WaifuException::class, get_class($e));
-			$this->addToAssertionCount(1);
-		}
+		$this->setGlobalMocks([
+			'curl_exec' => 'result',
+			'curl_getinfo' => 300,
+			'json_validate' => true,
+			'json_decode' => array()
+		], "ErnestMarcinko\\WaifuVault");
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			WaifuException::class
+		);
 
-		// trigger responseErrorCheck #3 - call without ->make()
-		try {
-			$handler = new WaifuRequestHandler();
-			$handler->getWaifu();
-		} catch (Exception $e) {
-			$this->assertSame(ErrorException::class, get_class($e));
-			$this->addToAssertionCount(1);
-		}
-
-		$this->assertSame(5, $this->numberOfAssertionsPerformed());
+		// trigger responseErrorCheck #3
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->getWaifu(),
+			ErrorException::class
+		);
 	}
 
 	public function testGetTrue(): void {
@@ -158,21 +147,18 @@ class WaifuRequestHandlerTest extends TestCase {
 			'curl_exec' => 'true',
 			'curl_getinfo' => 200,
 			'json_validate' => true,
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$response = $handler->make(RequestMethods::GET, 'fake')
 			->getTrue();
 		$this->assertSame(true, $response);
 
 		// trigger responseErrorCheck call without ->make()
-		try {
-			$handler = new WaifuRequestHandler();
-			$handler->getTrue();
-		} catch (Exception $e) {
-			$this->assertSame(ErrorException::class, get_class($e));
-			$this->addToAssertionCount(1);
-		}
-		$this->assertSame(1, $this->numberOfAssertionsPerformed());
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->getTrue(),
+			ErrorException::class
+		);
 	}
 
 	public function testGetRaw(): void {
@@ -180,35 +166,31 @@ class WaifuRequestHandlerTest extends TestCase {
 			'curl_exec' => 'content',
 			'curl_getinfo' => 200,
 			'json_validate' => true,
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$response = $handler->make(RequestMethods::GET, 'fake')
 			->getRaw();
 		$this->assertSame('content', $response);
 
 		// trigger responseErrorCheck call without ->make()
-		try {
-			$handler = new WaifuRequestHandler();
-			$handler->getRaw();
-		} catch (Exception $e) {
-			$this->assertSame(ErrorException::class, get_class($e));
-			$this->addToAssertionCount(1);
-		}
-		$this->assertSame(1, $this->numberOfAssertionsPerformed());
+		$handler = new WaifuRequestHandler();
+		$this->expectCatchException(
+			fn()=>$handler->getRaw(),
+			ErrorException::class
+		);
 
 		$this->setGlobalMocks([
 			'curl_exec' => 'content',
 			'curl_getinfo' => 403,
 			'json_validate' => true,
-		]);
+		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$this->expectException(Exception::class);
-		$handler->make(RequestMethods::GET, 'fake')
-			->getRaw();
+		$handler->make(RequestMethods::GET, 'fake')->getRaw();
 	}
 
 	public function setUp(): void {
-		GlobalMock::disable();
+		$this->unsetGlobalMocks();
 		$args = [
 			"token" => "13b2485a-1010-4e3e-8f75-20f2a0c50b56",
 			"url" => "https://waifuvault.moe/f/1711098733870/image.jpg",
@@ -216,21 +198,5 @@ class WaifuRequestHandlerTest extends TestCase {
 			"retentionPeriod" => "300 days 10 hours 5 minutes 1 second"
 		];
 		$this->waifuResponse = new WaifuResponse(...$args);
-	}
-
-	/**
-	 * Defines the global mocks via an array of function_name=>reponse
-	 *
-	 * @param array<string, mixed> $global_mocks key as function name, value as response
-	 * @return void
-	 */
-	private function setGlobalMocks(array $global_mocks): void {
-		try {
-			foreach ($global_mocks as $function_name => $return) {
-				GlobalMock::mock($function_name, $return);
-			}
-		} catch (Exception $e) {
-			$this->fail('Mocking failed: ' . $e->getMessage());
-		}
 	}
 }
