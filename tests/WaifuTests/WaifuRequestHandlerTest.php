@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class WaifuRequestHandlerTest extends TestCase {
 	use MockUtils;
+
 	private WaifuResponse $waifuResponse;
 	public function testMake(): void {
 		$handler = new WaifuRequestHandler();
@@ -93,8 +94,8 @@ class WaifuRequestHandlerTest extends TestCase {
 		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			Exception::class,
-			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu()
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			Exception::class
 		);
 
 		$this->setGlobalMocks([
@@ -105,19 +106,19 @@ class WaifuRequestHandlerTest extends TestCase {
 		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			Exception::class,
-			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu()
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			Exception::class
 		);
 
 		// trigger responseErrorCheck #1
 		$this->setGlobalMocks([
 			'curl_exec' => 'result',
 			'curl_getinfo' => 300,
-		],"ErnestMarcinko\\WaifuVault");
+		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			ErrorException::class,
-			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu()
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			ErrorException::class
 		);
 
 		// trigger responseErrorCheck #1
@@ -129,15 +130,15 @@ class WaifuRequestHandlerTest extends TestCase {
 		], "ErnestMarcinko\\WaifuVault");
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			WaifuException::class,
-			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu()
+			fn()=>$handler->make(RequestMethods::GET, 'fake')->getWaifu(),
+			WaifuException::class
 		);
 
 		// trigger responseErrorCheck #3
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			ErrorException::class,
-			fn()=>$handler->getWaifu()
+			fn()=>$handler->getWaifu(),
+			ErrorException::class
 		);
 	}
 
@@ -155,8 +156,8 @@ class WaifuRequestHandlerTest extends TestCase {
 		// trigger responseErrorCheck call without ->make()
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			ErrorException::class,
-			fn()=>$handler->getTrue()
+			fn()=>$handler->getTrue(),
+			ErrorException::class
 		);
 	}
 
@@ -174,8 +175,8 @@ class WaifuRequestHandlerTest extends TestCase {
 		// trigger responseErrorCheck call without ->make()
 		$handler = new WaifuRequestHandler();
 		$this->expectCatchException(
-			ErrorException::class,
-			fn()=>$handler->getRaw()
+			fn()=>$handler->getRaw(),
+			ErrorException::class
 		);
 
 		$this->setGlobalMocks([
