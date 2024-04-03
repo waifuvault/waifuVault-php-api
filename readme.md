@@ -35,15 +35,16 @@ To Upload a file, use the `WaifuApi::uploadFile` function.
 
 The function accepts an **associative array** of arguments.
 
-| Param (key)     | Type      | Description                                                                        | Required                                               | Extra info                                             |
-|-----------------|-----------|------------------------------------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|
-| `file`          | `string`  | The file path to upload                                                            | true only if `url` or `file_contents` is not supplied  | If `url` is supplied, this prop can't be set           |
-| `url`           | `string`  | The URL to a file that exists on the internet                                      | true only if `file` or `file_contents` is not supplied | If `url` is supplied, this prop has no effect          |
-| `file_contents` | `string`  | The file contents                                                                  | true only if `url` or `file` is not supplied           | If `url` or `file` is supplied, this prop can't be set |
-| `expires`       | `string`  | A string containing a number and a unit (1d = 1day)                                | false                                                  | Valid units are `m`, `h` and `d`                       |
-| `hideFilename`  | `boolean` | If true, then the uploaded filename won't appear in the URL                        | false                                                  | Defaults to `false`                                    |
-| `password`      | `string`  | If set, then the uploaded file will be encrypted                                   | false                                                  |                                                        |
-| `filename`      | `string`  | Only used if `file_contents` or `file` is set, will set the filename of the upload | false                                                  |                                                        |
+| Param (key)        | Type       | Description                                                                        | Required                                               | Extra info                                             |
+|--------------------|------------|------------------------------------------------------------------------------------|--------------------------------------------------------|--------------------------------------------------------|
+| `file`             | `string`   | The file path to upload                                                            | true only if `url` or `file_contents` is not supplied  | If `url` is supplied, this prop can't be set           |
+| `url`              | `string`   | The URL to a file that exists on the internet                                      | true only if `file` or `file_contents` is not supplied | If `url` is supplied, this prop has no effect          |
+| `file_contents`    | `string`   | The file contents                                                                  | true only if `url` or `file` is not supplied           | If `url` or `file` is supplied, this prop can't be set |
+| `expires`          | `string`   | A string containing a number and a unit (1d = 1day)                                | false                                                  | Valid units are `m`, `h` and `d`                       |
+| `hideFilename`     | `boolean`  | If true, then the uploaded filename won't appear in the URL                        | false                                                  | Defaults to `false`                                    |
+| `password`         | `string`   | If set, then the uploaded file will be encrypted                                   | false                                                  |                                                        |
+| `filename`         | `string`   | Only used if `file_contents` or `file` is set, will set the filename of the upload | false                                                  |                                                        |
+| `oneTimeDownload	` | `boolean`  | If true, the file is deleted after the first access	                               | false                                                  |                                                        |
 
 #### WaifuResponse Return value<a id="waifuresponse-object"></a>
 
@@ -54,8 +55,12 @@ The function returns a `WaifuResponse` object, throws and `Exception` or `WaifuE
 ErnestMarcinko\WaifuVault\WaifuResponse (4) {
   ["token"]=> string(36) "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
   ["url"]=> string(74) "https://waifuvault.moe/f/{timestamp}/{filename}.{file_ext}"
-  ["protected"]=> bool(true)
-  ["retentionPeriod"]=> string(39) "334 days 20 hours 16 minutes 23 seconds"
+  ["retentionPeriod"]=> string(39) "334 days 20 hours 16 minutes 23 seconds",
+  ["options"] ErnestMarcinko\WaifuVault\WaifuResponseOptions (4) {
+	["hideFilename"]=> bool(false),
+	["oneTimeDownload"]=> bool(false),
+	["protected"]=> bool(false),
+  }
 }
 ```
 

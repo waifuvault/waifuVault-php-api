@@ -194,8 +194,12 @@ class WaifuRequestHandlerTest extends TestCase {
 		$args = [
 			"token" => "13b2485a-1010-4e3e-8f75-20f2a0c50b56",
 			"url" => "https://waifuvault.moe/f/1711098733870/image.jpg",
-			"protected" => false,
-			"retentionPeriod" => "300 days 10 hours 5 minutes 1 second"
+			"retentionPeriod" => "300 days 10 hours 5 minutes 1 second",
+			"options" => [
+				"hideFilename" => true,
+				"oneTimeDownload" => false,
+				"protected" => false,
+			]
 		];
 		$this->waifuResponse = new WaifuResponse(...$args);
 	}

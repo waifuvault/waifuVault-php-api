@@ -25,7 +25,13 @@ use CURLStringFile;
  *     url: string
  * }
  *
- * @phpstan-type uploadFileArg FileUpload|FileContentUpload|UrlUpload
+ * @phpstan-type uploadFileArg array{
+ *     expires?:string,
+ *     hide_filename?:bool,
+ *     password?:string,
+ *     one_time_download?:bool
+ * }&(FileUpload|FileContentUpload|UrlUpload)
+ *
  * @phpstan-type modifyFileArg array{
  *     token: string,
  *     password?: string,
@@ -57,19 +63,29 @@ class WaifuApi {
 	public function uploadFile(array $args): WaifuResponse {
 		$post_fields = [];
 		$url = self::REST_URL;
-		$params = http_build_query(array_filter(
+		$params = array_filter(
 			$args,
 			function ($v, $k) {
 				return in_array($k, array(
 						'expires',
 						'hide_filename',
-						'password')) && !is_null($v); // @phpstan-ignore-line
+						'password',
+						'one_time_download')) && !is_null($v); // @phpstan-ignore-line
 			},
 			ARRAY_FILTER_USE_BOTH
+		);
+		/**
+		 * Convert boolean params to "true" or "false" strings, because
+		 * http_build_query will convert them to 1 or 0 integers, which throws an API Exception
+		 */
+		$params = http_build_query(array_map(
+			fn($v)=>is_bool($v) ? ($v ? 'true' : 'false') : $v, // @phpstan-ignore-line
+			$params
 		));
 		if ($params !== '') {
 			$url .=  '?' . $params;
 		}
+
 		if (isset($args['url'])) {
 			$post_fields['url'] = $args['url'];
 		} elseif (isset($args['file'])) {
