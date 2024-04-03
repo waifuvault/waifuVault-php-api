@@ -25,7 +25,13 @@ use CURLStringFile;
  *     url: string
  * }
  *
- * @phpstan-type uploadFileArg FileUpload|FileContentUpload|UrlUpload
+ * @phpstan-type uploadFileArg array{
+ *     expires?:string,
+ *     hide_filename?:bool,
+ *     password?:string,
+ *     one_time_download?:bool
+ * }&(FileUpload|FileContentUpload|UrlUpload)
+ *
  * @phpstan-type modifyFileArg array{
  *     token: string,
  *     password?: string,
@@ -63,7 +69,8 @@ class WaifuApi {
 				return in_array($k, array(
 						'expires',
 						'hide_filename',
-						'password')) && !is_null($v); // @phpstan-ignore-line
+						'password',
+						'one_time_download')) && !is_null($v); // @phpstan-ignore-line
 			},
 			ARRAY_FILTER_USE_BOTH
 		));
