@@ -13,24 +13,16 @@ use CURLStringFile;
  *
  * @link https://waifuvault.moe/
  *
- * @phpstan-type FileUpload array{
- *     file: string,
- *     filename?: string
- * }
- * @phpstan-type FileContentUpload array{
- *     file_contents: string,
- *     filename: string
- * }
- * @phpstan-type UrlUpload array{
- *     url: string
- * }
- *
  * @phpstan-type uploadFileArg array{
+ *     file?: string,
+ *     url?: string,
+ *     filename?: string,
+ *     file_contents?: string,
  *     expires?:string,
  *     hide_filename?:bool,
  *     password?:string,
  *     one_time_download?:bool
- * }&(FileUpload|FileContentUpload|UrlUpload)
+ *  }
  *
  * @phpstan-type modifyFileArg array{
  *     token: string,
@@ -69,7 +61,6 @@ class WaifuApi {
 				return in_array($k, array(
 						'expires',
 						'hide_filename',
-						'password',
 						'one_time_download')) && !is_null($v); // @phpstan-ignore-line
 			},
 			ARRAY_FILTER_USE_BOTH
@@ -79,7 +70,7 @@ class WaifuApi {
 		 * http_build_query will convert them to 1 or 0 integers, which throws an API Exception
 		 */
 		$params = http_build_query(array_map(
-			fn($v)=>is_bool($v) ? ($v ? 'true' : 'false') : $v, // @phpstan-ignore-line
+			fn($v)=>is_bool($v) ? ($v ? 'true' : 'false') : $v,
 			$params
 		));
 		if ($params !== '') {
@@ -99,12 +90,15 @@ class WaifuApi {
 			}
 			$post_fields['file'] = new CURLStringFile($data, $file_name);
 		} elseif (isset($args['file_contents'])) {
-			if (!isset($args['filename']) || $args['filename'] === '') { // @phpstan-ignore-line
+			if (!isset($args['filename']) || $args['filename'] === '') {
 				throw new Exception('File name is missing.');
 			}
 			$post_fields['file'] = new CURLStringFile($args['file_contents'], $args['filename']);
 		} else {
 			throw new Exception('Please provide a url, file or file_contents.');
+		}
+		if (isset($args['password']) && $args['password'] !== '') {
+			$post_fields['password'] = $args['password'];
 		}
 		return $this->requestHandler->make(
 			RequestMethods::PUT,

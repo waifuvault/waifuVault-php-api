@@ -14,7 +14,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 
 #[CoversClass(WaifuApi::class)]
-#[UsesClass(GlobalMock::class)]
 class WaifuApiTest extends TestCase {
 	private WaifuApi $waifu;
 	private WaifuResponse $waifuResponse;
@@ -54,7 +53,7 @@ class WaifuApiTest extends TestCase {
 		foreach ($bad_args as $args) {
 			try {
 				// Upload via URL
-				$this->waifu->uploadFile($args); // @phpstan-ignore-line
+				$this->waifu->uploadFile($args);
 			} catch (Exception $e) {
 				$this->assertSame(Exception::class, get_class($e));
 				$this->addToAssertionCount(1);
